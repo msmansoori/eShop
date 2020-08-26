@@ -1,0 +1,44 @@
+﻿@model IEnumerable<eShop.Frontend.Models.CategorySection>
+
+
+@if (Model != null && Model.Any())
+{
+    var mainCategoryory = Model.First();
+    <!-- Categories Section Begin -->
+    <section class="categories">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6 p-0">
+                    <div class="categories__item categories__large__item set-bg"
+                         data-setbg="@mainCategoryory.Image">
+                        <div class="categories__text">
+                            <h1>@mainCategoryory.Name</h1>
+                            <p>
+                                Sitamet, consectetur adipiscing elit, sed do eiusmod tempor incidid-unt labore
+                                edolore magna aliquapendisse ultrices gravida.
+                            </p>
+                            <a asp-action="Shop" asp-controller="home">Shop now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row">
+                        @foreach (var item in Model.Skip(1))
+                        {
+                            <div class="col-lg-6 col-md-6 col-sm-6 p-0">
+                                <div class="categories__item set-bg" data-setbg="@item.Image">
+                                    <div class="categories__text">
+                                        <h4>@item.Name</h4>
+                                        <p>@item.ProductCount items</p>
+                                        <a asp-action="Shop" asp-controller="home">Shop now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Categories Section End -->
+}

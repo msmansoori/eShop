@@ -1,0 +1,44 @@
+﻿@model eShop.Frontend.Models.MegaSale
+<!-- Product Section Begin -->
+@if (Model != null)
+{
+    <section class="discount">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 p-0">
+                    <div class="discount__pic">
+                        <img src="@Model.Image" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6 p-0">
+                    <div class="discount__text">
+                        <div class="discount__text__title">
+                            <span>Discount</span>
+                            <h2>@Model.Name</h2>
+                            <h5><span>Sale</span> @Model.Discount%</h5>
+                        </div>
+                        <div class="discount__countdown" id="countdown-time">
+                            <div class="countdown__item">
+                                <span>5</span>
+                                <p>Days</p>
+                            </div>
+                            <div class="countdown__item">
+                                <span>18</span>
+                                <p>Hour</p>
+                            </div>
+                            <div class="countdown__item">
+                                <span>46</span>
+                                <p>Min</p>
+                            </div>
+                            <div class="countdown__item">
+                                <span>05</span>
+                                <p>Sec</p>
+                            </div>
+                        </div>
+                        <a asp-action="Shop" asp-controller="home">Shop now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}

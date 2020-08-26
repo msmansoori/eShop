@@ -1,0 +1,40 @@
+﻿@model IEnumerable<eShop.Frontend.Models.Product>
+<!-- Product Section Begin -->
+@if (Model != null && Model.Any())
+{
+    @foreach (var product in Model)
+    {
+        <div class="col-lg-3 col-md-4 col-sm-6 mix @product.Category">
+            <div class="product__item @product.ProductLabelClass">
+                <div class="product__item__pic set-bg" data-setbg="@product.Image">
+                    @if (!string.IsNullOrEmpty(product.ProductLabel))
+                    {
+                        <div class="label @product.ProductLabelClass">@product.ProductLabel</div>
+                    }
+
+                <ul class="product__hover">
+                    <li><a href="@product.Image" class="image-popup"><span class="arrow_expand"></span></a></li>
+                    <li><a asp-action="#"><span class="icon_bag_alt"></span></a></li>
+                </ul>
+                </div>
+                <div class="product__item__text">
+                    <h6><a asp-action="ProductDetail" asp-controller="home">@product.Name</a></h6>
+                    <div class="rating">
+                        @for (int rating = 1; rating <= product.Rating; rating++)
+                        {
+                            <i class="fa fa-star"></i>
+                        }
+                    </div>
+                    @if (product.HasDiscount)
+                    {
+                        <div class="product__price">$ @product.DiscountPrice <span>$ @product.Price</span></div>
+                    }
+                    else
+                    {
+                        <div class="product__price">$ @product.Price</div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
