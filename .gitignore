@@ -5,3 +5,5 @@
 /.vs/eShop
 /eShop.Frontend/bin
 /eShop.Frontend/obj
+/eShop.APIGateway/bin
+/eShop.APIGateway/obj
