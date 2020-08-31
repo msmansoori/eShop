@@ -1,47 +1,33 @@
 ﻿using eShop.Frontend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace eShop.Frontend.Components
 {
     public class CategorySectionViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
-            var categories = new List<CategorySection>
+            var categories = new List<CategorySection>();
+            try
             {
-                new CategorySection
+                var url = $"ProductCategory/Sections";
+                HttpClient client = new HttpClient
                 {
-                    Name="Women’s fashion",
-                    ProductCount=408,
-                    Image="/img/categories/category-1.jpg"
-                },
-                 new CategorySection
-                {
-                    Name="Men’s fashion",
-                    ProductCount=15258,
-                    Image="/img/categories/category-2.jpg"
-                },
-                  new CategorySection
-                {
-                    Name="Kid’s fashion",
-                    ProductCount=273,
-                    Image="/img/categories/category-3.jpg"
-                },
-                   new CategorySection
-                {
-                    Name="Cosmetics",
-                    ProductCount=159,
-                    Image="/img/categories/category-4.jpg"
-                },
-                   new CategorySection
-                {
-                    Name="Accessories",
-                    ProductCount=792,
-                    Image="/img/categories/category-5.jpg"
-                }
-            };
-
+                    BaseAddress = new Uri("https://localhost:6001/")
+                };
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var responseString = await client.GetStringAsync(url);
+                categories = JsonConvert.DeserializeObject<List<CategorySection>>(responseString);
+            }
+            catch (Exception ex)
+            {
+            }
             return View(categories);
         }
     }

@@ -20,8 +20,11 @@
 		</PackageReference>
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
 	</ItemGroup>
-	<!--<ItemGroup>
-		<Protobuf Include="..\CustomerService\Protos\credit_rating_service.proto" GrpcServices="Client" />
-	</ItemGroup>-->
 
+	<ItemGroup>
+	  <ProjectReference Include="..\eShop.Common\eShop.Common.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="..\eShop.Product.API\Protos\product.proto" GrpcServices="Client" />
+	</ItemGroup>
 </Project>

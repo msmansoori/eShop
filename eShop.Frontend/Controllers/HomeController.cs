@@ -1,8 +1,8 @@
-﻿using eShop.Frontend.Models;
+﻿using System.Diagnostics;
+using System.Net.Http;
+using eShop.Frontend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace eShop.Frontend.Controllers
 {
@@ -17,6 +17,9 @@ namespace eShop.Frontend.Controllers
 
         public IActionResult Index()
         {
+            // https://stackoverflow.com/questions/32618759/viewcomponent-alternative-for-ajax-refresh/32628302
+            // COmponent refresh 
+
             return View();
         }
 
@@ -33,6 +36,11 @@ namespace eShop.Frontend.Controllers
         public IActionResult Cart()
         {
             return View();
+        }
+
+        public IActionResult IndexVC()
+        {
+            return ViewComponent("Product");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

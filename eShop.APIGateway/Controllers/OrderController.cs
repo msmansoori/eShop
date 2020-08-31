@@ -16,9 +16,9 @@ namespace eShop.APIGateway.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController(ILogger<WeatherForecastController> logger)
+        public OrderController(ILogger<OrderController> logger)
         {
             _logger = logger;
         }

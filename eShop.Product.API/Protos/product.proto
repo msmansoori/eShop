@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+option csharp_namespace = "eShop.ProductAPI";
+
+package ProductAPI;
+
+// The product service definition.
+service Product {
+  // Sends a products
+  rpc GetProducts (ProductItemsRequest) returns (PaginatedItemsResponse);
+
+  // Send product by id
+  rpc GetProductById (ProductItemRequest) returns (ProductResponse);
+
+  // Add new product
+  rpc AddProduct (ProductRequest) returns (ProductResponse);
+
+  // Update exisiting product
+  rpc UpdateProduct (ProductRequest) returns (ProductResponse);
+}
+
+// The request message containing the Product overview filter
+message ProductItemsRequest {
+	int32 pageSize = 1;
+	int32 pageIndex = 2;
+    string search = 3;
+}
+
+// The request message containing the Product overview detail
+message PaginatedItemsResponse {
+	int32 pageIndex = 1;
+	int32 pageSize = 2;
+	int64 count = 3;
+	repeated ProductListResponse data = 4;
+}
+
+// The request message containing the Product id
+message ProductItemRequest {
+	string id = 1;
+}
+
+// The response message containing the greetings.
+message ProductResponse {
+  string id = 1;
+  string name = 2;
+  ProductType category = 3;
+  ProductBrand brand = 4;
+  double price = 5;
+  double discount = 6;
+  double discount_price = 7;  
+  string description = 8;
+  string short_description = 9;
+  string specification = 10;  
+  int32 available_stock = 11;
+  string colors = 12;
+  string sizes = 13;
+  string promotions = 14;
+  repeated ProductImage ProductImages = 15;
+}
+
+message ProductListResponse {
+  string id = 1;
+  string name = 2;
+  ProductType  category = 3;
+  ProductBrand  brand = 4;
+  double price = 5;
+  double discount = 6;
+  double discount_price = 7;  
+  int32 available_stock = 8;
+}
+
+// The request message containing the Product detail
+message ProductRequest {
+  string id = 1;
+  string name = 2;
+  ProductType  category = 3;
+  ProductBrand  brand = 4;
+  double price = 5;
+  double discount = 6;
+  double discount_price = 7;  
+  string description = 8;
+  string short_description = 9;
+  string specification = 10;  
+  string available_stock = 11;
+  string colors = 12;
+  string sizes = 13;
+  string promotions = 14;
+}
+
+
+message ProductBrand {
+	string id = 1;
+	string name = 2;
+}
+
+message ProductType {
+	string id = 1;
+	string name = 2;
+}
+
+message ProductImage {
+	string id = 1;
+	string name = 2;
+	string path = 3;
+}

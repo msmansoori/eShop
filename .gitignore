@@ -7,3 +7,11 @@
 /eShop.Frontend/obj
 /eShop.APIGateway/bin
 /eShop.APIGateway/obj
+/eShop.Product.API/bin
+/eShop.Product.API/obj
+/eShop.ProductEntities/bin
+/eShop.ProductEntities/obj
+/InternalServer/bin
+/InternalServer/obj
+/eShop.Common/bin
+/eShop.Common/obj
