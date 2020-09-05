@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using eShop.Common.Utilities;
 using eShop.ProductAPI;
 using eShop.ProductEntities.Context;
+using eShop.ProductEntities.Entities;
 using eShop.ProductEntities.Entities.Enums;
 using Google.Protobuf;
 using Grpc.Core;
@@ -17,7 +19,6 @@ namespace eShop.Product.API.Services
     {
         private readonly ILogger<ProductService> _logger;
         private readonly ProductContext db;
-
 
         public ProductService(ILogger<ProductService> logger, ProductContext context)
         {
@@ -95,6 +96,13 @@ namespace eShop.Product.API.Services
                 Promotions = result.Promotion.ToString()
             };
         }
+
+        public override Task<ProductResponse> UpdateProduct(ProductRequest request, ServerCallContext context)
+        {
+            return base.UpdateProduct(request, context);
+        }
+
+
         private PaginatedItemsResponse MapToResponse(List<eShop.ProductEntities.Entities.Product> items, long count, int pageIndex, int pageSize)
         {
             var result = new PaginatedItemsResponse()
@@ -179,6 +187,27 @@ namespace eShop.Product.API.Services
                 }
             }
             return string.Join(";", enumTypes);
+        }
+
+
+        private Brand ProductBrand(eShop.ProductAPI.ProductBrand brandDto)
+        {
+            if (!brandDto.IsNull() & brandDto.Id.IsNotEmpty())
+            {
+                var brandEx = db.Brands.FirstOrDefault(brand => brand.Active && brand.ExternalId.ToString() == brandDto.Id);
+                if (brandEx.IsNull())
+                {
+                    brandEx = new Brand { Id = 1, Active = true, Name = "SKMEIMore Men Watches from SKMEI", CreatedById = 2, CreatedOn = DateTime.UtcNow, ExternalId = Guid.NewGuid() };
+                    db.Brands.Add(brandEx);
+                }
+                else if (!brandEx.Name.Equals(brandDto.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    brandEx.Name = brandDto.Name;
+                    db.Brands.Update(brandEx);
+                }
+                return brandEx;
+            }
+            return null;
         }
     }
 }

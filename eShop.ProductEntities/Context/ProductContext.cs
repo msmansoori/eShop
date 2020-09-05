@@ -20,8 +20,8 @@ namespace eShop.ProductEntities.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().ToTable("Users").HasData(
-                new User { Id = 1, Active = true, Name = "Admin", InternalReference = 1, CreatedOn = DateTime.UtcNow, ExternalId = Guid.NewGuid() },
-                new User { Id = 2, Active = true, Name = "Retailer", InternalReference = 2, CreatedOn = DateTime.UtcNow, ExternalId = Guid.NewGuid() });
+                new User { Id = 1, Active = true, Name = "Admin", InternalReference = Guid.Parse("CCF5361B-74A9-4B75-8211-37B26E2D1BC0"), CreatedOn = DateTime.UtcNow, ExternalId = Guid.NewGuid() },
+                new User { Id = 2, Active = true, Name = "Retailer", InternalReference = Guid.Parse("D25F7D72-E475-4D6F-8CA7-AAF189D322C4"), CreatedOn = DateTime.UtcNow, ExternalId = Guid.NewGuid() });
 
             modelBuilder.Entity<Category>().ToTable("Categories").HasData(
                 new Category { Id = 1, Active = true, Name = "Women", CreatedById = 1, CreatedOn = DateTime.UtcNow, ExternalId = Guid.NewGuid() },

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using eShop.Common.Constants;
+using eShop.Common.Services;
+using eShop.IdentityAPI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,11 +15,6 @@ namespace eShop.APIGateway.Controllers
     [Route("[controller]")]
     public class CustomerController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<CustomerController> _logger;
 
         public CustomerController(ILogger<CustomerController> logger)
@@ -24,16 +23,67 @@ namespace eShop.APIGateway.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<PaginatedCustomerResponse> Get([Required] CustomerItemsRequest request)
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            if (!ModelState.IsValid)
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                throw new Exception("Invalid model");
+            }
+            var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.IdentityService, logger: _logger, func: async channel =>
+            {
+                var client = new Customer.CustomerClient(channel);
+                _logger.LogDebug("Grpc get customer request request {@request}", request);
+                return await client.GetCustomersAsync(request);
+            });
+            return response;
+        }
+
+        [HttpGet, Route("{id}")]
+        public async Task<CustomerResponse> Get([Required] Guid id)
+        {
+            var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.IdentityService, logger: _logger, func: async channel =>
+            {
+                var client = new Customer.CustomerClient(channel);
+                _logger.LogDebug("Grpc get customer request request {@request}", id);
+                return await client.GetCustomerAsync(new CustomerItemRequest { Id = id.ToString() });
+            });
+            return response;
+        }
+
+        [HttpPost]
+        public async Task<CustomerResponse> AddCustomer([Required] CustomerRequest customerRequest)
+        {
+            var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.IdentityService, logger: _logger, func: async channel =>
+            {
+                var client = new Customer.CustomerClient(channel);
+                _logger.LogDebug("Grpc get customer request {@request}", customerRequest);
+                return await client.AddCustomerAsync(customerRequest);
+            });
+            return response;
+        }
+
+        [HttpPut]
+        public async Task<CustomerResponse> UpdateCustomer([Required] CustomerUpdateRequest customerRequest)
+        {
+            var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.IdentityService, logger: _logger, func: async channel =>
+            {
+                var client = new Customer.CustomerClient(channel);
+                _logger.LogDebug("Grpc get customer request {@request}", customerRequest);
+                return await client.UpdateCustomerAsync(customerRequest);
+            });
+            return response;
+        }
+
+        [HttpDelete, Route("{id}")]
+        public async Task<CustomerResponse> DeleteCustomer([Required] Guid id)
+        {
+            var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.IdentityService, logger: _logger, func: async channel =>
+            {
+                var client = new Customer.CustomerClient(channel);
+                _logger.LogDebug("Grpc delete customer request {@request}", id);
+                return await client.DeleteCustomerAsync(new CustomerItemRequest { Id = id.ToString() });
+            });
+            return response;
         }
     }
 }

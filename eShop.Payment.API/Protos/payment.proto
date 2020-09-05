@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "eShop.PaymentAPI";
+
+package PaymentAPI;
+
+// The greeting service definition.
+service Payment {
+  // Sends a greeting
+  rpc AddPayment (PaymentRequest) returns (PaymentReply);
+}
+
+// The request message containing the user's name.
+message PaymentRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message PaymentReply {
+  string message = 1;
+}

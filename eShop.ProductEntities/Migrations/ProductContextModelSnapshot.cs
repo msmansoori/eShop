@@ -61,8 +61,8 @@ namespace eShop.ProductEntities.Migrations
                             Id = 1L,
                             Active = true,
                             CreatedById = 2L,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 896, DateTimeKind.Utc).AddTicks(8317),
-                            ExternalId = new Guid("ff2b29b3-f4b8-4ef5-94f6-07582da3f885"),
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 952, DateTimeKind.Utc).AddTicks(1574),
+                            ExternalId = new Guid("54e6e514-89c5-4839-9cc3-50c79e43882a"),
                             Name = "SKMEIMore Men Watches from SKMEI"
                         });
                 });
@@ -112,8 +112,8 @@ namespace eShop.ProductEntities.Migrations
                             Id = 1L,
                             Active = true,
                             CreatedById = 1L,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 896, DateTimeKind.Utc).AddTicks(7228),
-                            ExternalId = new Guid("1b55a924-11f2-4248-9820-55fad0688836"),
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 952, DateTimeKind.Utc).AddTicks(908),
+                            ExternalId = new Guid("fba63609-c392-4d74-8738-3466399853ef"),
                             Name = "Women",
                             ParentId = 0L
                         },
@@ -122,8 +122,8 @@ namespace eShop.ProductEntities.Migrations
                             Id = 2L,
                             Active = true,
                             CreatedById = 1L,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 896, DateTimeKind.Utc).AddTicks(7360),
-                            ExternalId = new Guid("a9990744-7f30-4110-86c7-e46ae805ca28"),
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 952, DateTimeKind.Utc).AddTicks(926),
+                            ExternalId = new Guid("70a05440-2d84-4b26-9976-af98e8478725"),
                             Name = "Men",
                             ParentId = 0L
                         },
@@ -132,8 +132,8 @@ namespace eShop.ProductEntities.Migrations
                             Id = 3L,
                             Active = true,
                             CreatedById = 1L,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 896, DateTimeKind.Utc).AddTicks(7364),
-                            ExternalId = new Guid("0c426574-d0ca-4fb8-9907-ccd047d15907"),
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 952, DateTimeKind.Utc).AddTicks(928),
+                            ExternalId = new Guid("42a80e59-0f90-4a3d-b0c3-551342c8fa87"),
                             Name = "Kid",
                             ParentId = 0L
                         },
@@ -142,8 +142,8 @@ namespace eShop.ProductEntities.Migrations
                             Id = 4L,
                             Active = true,
                             CreatedById = 1L,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 896, DateTimeKind.Utc).AddTicks(7367),
-                            ExternalId = new Guid("56568eec-83c5-466d-bc97-01b9ce0643fa"),
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 952, DateTimeKind.Utc).AddTicks(930),
+                            ExternalId = new Guid("b4b2d122-743e-47ef-bf77-322b3a7f720e"),
                             Name = "Accessories",
                             ParentId = 0L
                         },
@@ -152,8 +152,8 @@ namespace eShop.ProductEntities.Migrations
                             Id = 5L,
                             Active = true,
                             CreatedById = 1L,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 896, DateTimeKind.Utc).AddTicks(7369),
-                            ExternalId = new Guid("ca1c35a8-38a8-40b7-92a8-ee0f99b6616c"),
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 952, DateTimeKind.Utc).AddTicks(947),
+                            ExternalId = new Guid("b5b8e605-8338-47d6-92b5-bb0082519741"),
                             Name = "Cosmetic",
                             ParentId = 0L
                         });
@@ -245,12 +245,12 @@ namespace eShop.ProductEntities.Migrations
                             CategoryId = 1L,
                             Colors = "1;2;3",
                             CreatedById = 2L,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 896, DateTimeKind.Utc).AddTicks(9676),
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 952, DateTimeKind.Utc).AddTicks(2501),
                             Description = @"Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt loret. Neque porro lorem quisquam est, qui dolorem ipsum quia dolor si.Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed quia ipsu consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Nulla consequat massa quis enim.  Lorem ipsum dolor sit amet, consectetuer adipiscing elit.Aenean commodo ligula eget dolor.Aenean massa.Cum sociis natoque penatibus et magnis dis parturient montes, 
  nascetur ridiculus mus.Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem",
                             Discount = 10.0,
                             DiscountPrice = 50.05m,
-                            ExternalId = new Guid("0fd95952-fd8f-4dad-9a95-3d8f27f654f0"),
+                            ExternalId = new Guid("e3647825-b793-404f-aa6a-992d32cda0cb"),
                             Name = "ESSENTIAL STRUCTURED BLAZER",
                             Price = 500.5m,
                             Promotion = 1,
@@ -312,10 +312,10 @@ namespace eShop.ProductEntities.Migrations
                             Id = 1L,
                             Active = true,
                             CreatedById = 1L,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 897, DateTimeKind.Utc).AddTicks(9395),
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 952, DateTimeKind.Utc).AddTicks(8855),
                             Entity = 1,
                             EntityId = 1L,
-                            ExternalId = new Guid("6b7f8362-5f48-4d44-a1df-8bb7b2e0dda1"),
+                            ExternalId = new Guid("41e4863e-dfca-4683-a394-bc2cb43d2d0e"),
                             FilePath = "/img/product/details/product-1.jpg",
                             Name = "ESSENTIAL STRUCTURED BLAZER 1"
                         },
@@ -324,10 +324,10 @@ namespace eShop.ProductEntities.Migrations
                             Id = 2L,
                             Active = true,
                             CreatedById = 1L,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 897, DateTimeKind.Utc).AddTicks(9677),
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 952, DateTimeKind.Utc).AddTicks(8867),
                             Entity = 1,
                             EntityId = 1L,
-                            ExternalId = new Guid("24b0f523-2ed8-42fc-8dfb-724a14b0d511"),
+                            ExternalId = new Guid("3d665eb9-aee2-485a-b5d4-6371848ee41e"),
                             FilePath = "/img/product/details/product-2.jpg",
                             Name = "ESSENTIAL STRUCTURED BLAZER 2"
                         },
@@ -336,10 +336,10 @@ namespace eShop.ProductEntities.Migrations
                             Id = 3L,
                             Active = true,
                             CreatedById = 1L,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 897, DateTimeKind.Utc).AddTicks(9688),
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 952, DateTimeKind.Utc).AddTicks(8870),
                             Entity = 1,
                             EntityId = 1L,
-                            ExternalId = new Guid("350efe8c-e80e-4e48-b246-383c4a54aeb3"),
+                            ExternalId = new Guid("ef63f815-8eab-4a6b-b3ab-7227798a6ecf"),
                             FilePath = "/img/product/details/product-3.jpg",
                             Name = "ESSENTIAL STRUCTURED BLAZER 3"
                         },
@@ -348,10 +348,10 @@ namespace eShop.ProductEntities.Migrations
                             Id = 4L,
                             Active = true,
                             CreatedById = 1L,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 897, DateTimeKind.Utc).AddTicks(9691),
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 952, DateTimeKind.Utc).AddTicks(8871),
                             Entity = 1,
                             EntityId = 1L,
-                            ExternalId = new Guid("9a1510d3-c489-45eb-8b34-366218ac63b5"),
+                            ExternalId = new Guid("d8ee576a-7e27-4771-8478-4ab394cd2576"),
                             FilePath = "/img/product/details/product-4.jpg",
                             Name = "ESSENTIAL STRUCTURED BLAZER 4"
                         });
@@ -373,8 +373,8 @@ namespace eShop.ProductEntities.Migrations
                     b.Property<Guid>("ExternalId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("InternalReference")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("InternalReference")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
@@ -391,18 +391,18 @@ namespace eShop.ProductEntities.Migrations
                         {
                             Id = 1L,
                             Active = true,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 894, DateTimeKind.Utc).AddTicks(9132),
-                            ExternalId = new Guid("62825b80-f20b-481f-8df5-41a3b3a00839"),
-                            InternalReference = 1L,
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 950, DateTimeKind.Utc).AddTicks(6099),
+                            ExternalId = new Guid("84baf1d4-f821-4d1d-9632-5b2248d8bd29"),
+                            InternalReference = new Guid("ccf5361b-74a9-4b75-8211-37b26e2d1bc0"),
                             Name = "Admin"
                         },
                         new
                         {
                             Id = 2L,
                             Active = true,
-                            CreatedOn = new DateTime(2020, 8, 31, 11, 43, 11, 895, DateTimeKind.Utc).AddTicks(444),
-                            ExternalId = new Guid("163e6890-336e-4dc1-b0dc-20c5c8be94b4"),
-                            InternalReference = 2L,
+                            CreatedOn = new DateTime(2020, 8, 31, 15, 21, 6, 950, DateTimeKind.Utc).AddTicks(6863),
+                            ExternalId = new Guid("02a5bfae-0899-4016-9448-9a5913ac2474"),
+                            InternalReference = new Guid("d25f7d72-e475-4d6f-8ca7-aaf189d322c4"),
                             Name = "Retailer"
                         });
                 });

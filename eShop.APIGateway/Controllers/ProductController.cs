@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using eShop.APIGateway.Attributes;
 using eShop.APIGateway.Models;
 using eShop.Common.Constants;
 using eShop.Common.Services;
@@ -11,6 +12,7 @@ namespace eShop.APIGateway.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [CustomAuthorization]
     public class ProductController : ControllerBase
     {
         private readonly ILogger<ProductController> _logger;
@@ -21,7 +23,6 @@ namespace eShop.APIGateway.Controllers
         }
 
         [HttpGet]
-        //public IEnumerable<Product1> Get()
         public async Task<PaginatedItemsResponse> Get()
         {
             var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.ProductService, logger: _logger, func: async channel =>
@@ -31,7 +32,7 @@ namespace eShop.APIGateway.Controllers
                    _logger.LogDebug("Grpc get product request request {@request}", request);
                    return await client.GetProductsAsync(request);
                });
-            return response;            
+            return response;
         }
 
         [HttpGet, Route("{id}")]

@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "eShop.ProductAPI";
+
+package ProductAPI;
+
+// The product service definition.
+service ProductRetailer {
+  rpc UpdateRetailer (ProductRetailerUpdateRequest) returns (ProductRetailerResponse);
+}
+
+message ProductRetailerResponse {
+  string id = 1;
+  string name = 2;
+}
+
+message ProductRetailerUpdateRequest {
+   string id = 1;
+   string name = 2;
+   bool isDeleted = 3;
+}

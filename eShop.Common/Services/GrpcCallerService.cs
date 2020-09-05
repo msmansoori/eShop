@@ -15,16 +15,20 @@ namespace eShop.Common.Services
 
             var channel = GrpcChannel.ForAddress(urlGrpc);
 
-
-            logger.LogInformation("Creating grpc client base address urlGrpc ={@urlGrpc}, BaseAddress={@BaseAddress} ", urlGrpc, channel.Target);
-
+            if (logger != null)
+            {
+                logger.LogInformation("Creating grpc client base address urlGrpc ={@urlGrpc}, BaseAddress={@BaseAddress} ", urlGrpc, channel.Target);
+            }
             try
             {
                 return await func(channel);
             }
             catch (RpcException e)
             {
-                logger.LogError("Error calling via grpc: {Status} - {Message}", e.Status, e.Message);
+                if (logger != null)
+                {
+                    logger.LogError("Error calling via grpc: {Status} - {Message}", e.Status, e.Message);
+                }
                 return default;
             }
             finally
@@ -42,16 +46,20 @@ namespace eShop.Common.Services
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
 
             var channel = GrpcChannel.ForAddress(urlGrpc);
-
-            logger.LogDebug("Creating grpc client base address {@httpClient.BaseAddress} ", channel.Target);
-
+            if (logger != null)
+            {
+                logger.LogDebug("Creating grpc client base address {@httpClient.BaseAddress} ", channel.Target);
+            }
             try
             {
                 await func(channel);
             }
             catch (RpcException e)
             {
-                logger.LogError("Error calling via grpc: {Status} - {Message}", e.Status, e.Message);
+                if (logger != null)
+                {
+                    logger.LogError("Error calling via grpc: {Status} - {Message}", e.Status, e.Message);
+                }
             }
             finally
             {

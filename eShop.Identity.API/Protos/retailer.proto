@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+option csharp_namespace = "eShop.IdentityAPI";
+
+package IdentityAPI;
+
+// The product service definition.
+service Retailer {
+  rpc GetRetailers (RetailerItemsRequest) returns (PaginatedRetailerResponse);
+  rpc GetRetailer (RetailerItemRequest) returns (RetailerResponse);
+  rpc AddRetailer (RetailerRequest) returns (RetailerResponse);
+  rpc UpdateRetailer (RetailerUpdateRequest) returns (RetailerResponse);
+  rpc DeleteRetailer (RetailerItemRequest) returns (RetailerResponse);
+}
+
+
+// The request message containing the Product overview filter
+message RetailerItemsRequest {
+	int32 pageSize = 1;
+	int32 pageIndex = 2;
+    string search = 3;
+}
+
+// The request message containing the Product overview detail
+message PaginatedRetailerResponse {
+	int32 pageIndex = 1;
+	int32 pageSize = 2;
+	int64 count = 3;
+	repeated RetailerListResponse data = 4;
+}
+
+message RetailerListResponse {
+  string id = 1;
+  string name = 2;
+  string personal_email = 3;
+  string business_email = 4;
+  string address = 5;
+}
+
+message RetailerItemRequest {
+	string id = 1;
+}
+
+message RetailerResponse {
+  string id = 1;
+  string name = 2;
+   string personal_email = 3;
+  string business_email = 4;
+  string contact_number = 5; 
+  string line1 = 6;
+  string line2 = 7;
+  string city = 8;  
+  string state = 9;
+  string zipcode = 10;
+  string full_address = 11;
+}
+
+message RetailerRequest {
+  string name = 1;
+  string personal_email = 2;
+  string contact_number = 3; 
+  string line1 = 4;
+  string line2 = 5;
+  string city = 6;  
+  string state = 7;
+  string zipcode = 8;
+  string business_email = 9;
+  string password = 10;
+}
+
+
+message RetailerUpdateRequest {
+ string id = 1;
+  string name = 2;
+  string personal_email = 3;
+  string contact_number = 4; 
+  string line1 = 5;
+  string line2 = 6;
+  string city = 7;  
+  string state = 8;
+  string zipcode = 9;
+  string business_email = 10;
+}

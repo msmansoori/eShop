@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "eShop.OrderAPI";
+
+package OrderAPI;
+
+// The greeting service definition.
+service Basket {
+  // Sends a greeting
+  rpc AddBasket (BasketRequest) returns (BasketReply);
+}
+
+// The request message containing the user's name.
+message BasketRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message BasketReply {
+  string message = 1;
+}
