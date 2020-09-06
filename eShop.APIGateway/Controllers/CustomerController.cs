@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
+using eShop.APIGateway.Attributes;
 using eShop.Common.Constants;
 using eShop.Common.Services;
 using eShop.IdentityAPI;
@@ -13,6 +12,7 @@ namespace eShop.APIGateway.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [CustomAuthorization]
     public class CustomerController : ControllerBase
     {
         private readonly ILogger<CustomerController> _logger;
@@ -46,18 +46,6 @@ namespace eShop.APIGateway.Controllers
                 var client = new Customer.CustomerClient(channel);
                 _logger.LogDebug("Grpc get customer request request {@request}", id);
                 return await client.GetCustomerAsync(new CustomerItemRequest { Id = id.ToString() });
-            });
-            return response;
-        }
-
-        [HttpPost]
-        public async Task<CustomerResponse> AddCustomer([Required] CustomerRequest customerRequest)
-        {
-            var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.IdentityService, logger: _logger, func: async channel =>
-            {
-                var client = new Customer.CustomerClient(channel);
-                _logger.LogDebug("Grpc get customer request {@request}", customerRequest);
-                return await client.AddCustomerAsync(customerRequest);
             });
             return response;
         }

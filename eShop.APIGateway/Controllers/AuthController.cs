@@ -22,8 +22,16 @@ namespace eShop.APIGateway.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Handle user login
+        /// </summary>
+        /// <remarks>
+        /// Email: admin@gmail.com,retailer@gmail.com,customer@gmail.com
+        /// </remarks>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost, Route("login")]
-        public async Task<LoginResponse> Get([Required] LoginRequest request)
+        public async Task<LoginResponse> Login([Required] LoginRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -34,6 +42,40 @@ namespace eShop.APIGateway.Controllers
                 var client = new Auth.AuthClient(channel);
                 _logger.LogDebug("Grpc auth login {@request}", request);
                 return await client.HandleLoginAsync(request);
+            });
+            return response;
+        }
+
+
+        [HttpPost, Route("logout")]
+        public async Task<LogoutResponse> Logout([Required] LogoutRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                throw new Exception("Invalid model");
+            }
+            var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.IdentityService, logger: _logger, func: async channel =>
+            {
+                var client = new Auth.AuthClient(channel);
+                _logger.LogDebug("Grpc auth logout {@request}", request);
+                return await client.LogoutAsync(request);
+            });
+            return response;
+        }
+
+
+        [HttpPost, Route("register")]
+        public async Task<CustomerResponse> Register([Required] CustomerRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                throw new Exception("Invalid model");
+            }
+            var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.IdentityService, logger: _logger, func: async channel =>
+            {
+                var client = new Customer.CustomerClient(channel);
+                _logger.LogDebug("Grpc get customer request {@request}", request);
+                return await client.AddCustomerAsync(request);
             });
             return response;
         }

@@ -1,30 +1,30 @@
-using eShop.Common.Utilities;
-using eShop.IdentityAPI;
-using eShop.IdentityEntities.Context;
-using eShop.IdentityEntities.Entities;
-using eShop.IdentityEntities.Entities.Enums;
-using Grpc.Core;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using eShop.Common.Utilities;
+using eShop.IdentityAPI;
+using eShop.IdentityEntities.Entities;
+using eShop.IdentityEntities.Entities.Enums;
+using eShop.InternalServer.Interfaces;
+using Grpc.Core;
+using Microsoft.Extensions.Logging;
 
 namespace eShop.Identity.API
 {
     public class CustomerService : Customer.CustomerBase
     {
         private readonly ILogger<CustomerService> _logger;
-        private readonly IdentityContext db;
-        public CustomerService(ILogger<CustomerService> logger, IdentityContext context)
+        private readonly IMicroKernel _kernel;
+        public CustomerService(ILogger<CustomerService> logger, IMicroKernel kernel)
         {
-            db = context;
             _logger = logger;
+            _kernel = kernel;
         }
 
         public override Task<PaginatedCustomerResponse> GetCustomers(CustomerItemsRequest request, ServerCallContext context)
         {
-            var result = db.Users.Where(user => user.Active && user.UserType == UserType.Customer).AsQueryable();
+            var result = _kernel.GetEntities<User>().Where(user => user.UserType == UserType.Customer);
 
             if (!string.IsNullOrWhiteSpace(request.Search))
             {
@@ -41,17 +41,8 @@ namespace eShop.Identity.API
 
         public override Task<CustomerResponse> GetCustomer(CustomerItemRequest request, ServerCallContext context)
         {
-            Guid external = Guid.Empty;
-            try
-            {
-                external = Guid.Parse(request.Id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Invalid customer id");
-            }
-
-            var user = db.Users.FirstOrDefault(user => user.Active && user.UserType == UserType.Customer && user.ExternalId == external);
+            var user = _kernel.GetEntity<User>(externalId: ParseUserID(id: request.Id));
+            ValidateUserType(user);
             context.Status = new Status(StatusCode.OK, string.Empty);
             return Task.FromResult(MapToResponse(user: user));
         }
@@ -62,8 +53,7 @@ namespace eShop.Identity.API
             {
                 throw new Exception("Email and password are required");
             }
-            var user = db.Users.FirstOrDefault(user => user.Active && user.PersonalEmail.Equals(request.Email, StringComparison.OrdinalIgnoreCase));
-
+            var user = _kernel.GetEntities<User>().FirstOrDefault(user => user.PersonalEmail.ToLower() == request.Email.Trim().ToLower());
             if (!user.IsNull())
             {
                 throw new Exception("Email address already exist");
@@ -71,12 +61,9 @@ namespace eShop.Identity.API
 
             user = new User
             {
-                Active = true,
                 PersonalEmail = request.Email,
                 City = request.City,
                 ContactNumber = request.ContactNumber,
-                CreatedOn = DateTime.UtcNow,
-                ExternalId = Guid.NewGuid(),
                 Line1 = request.Line1,
                 Line2 = request.Line2,
                 Name = request.Name,
@@ -85,30 +72,17 @@ namespace eShop.Identity.API
                 UserType = UserType.Customer,
                 Zipcode = request.Zipcode
             };
-            db.Users.Add(user);
+
+            _kernel.AddEntity(entity: user, saveChanges: true);
+            ValidateUserType(user);
             context.Status = new Status(StatusCode.OK, string.Empty);
             return Task.FromResult(MapToResponse(user: user));
         }
 
         public override Task<CustomerResponse> UpdateCustomer(CustomerUpdateRequest request, ServerCallContext context)
         {
-
-            Guid external = Guid.Empty;
-            try
-            {
-                external = Guid.Parse(request.Id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Invalid customer");
-            }
-
-            var user = db.Users.FirstOrDefault(user => user.Active && user.UserType == UserType.Customer && user.ExternalId == external);
-
-            if (user.IsNull())
-            {
-                throw new Exception("Invalid customer");
-            }
+            var user = _kernel.GetEntity<User>(externalId: ParseUserID(id: request.Id));
+            ValidateUserType(user);
 
             user.PersonalEmail = request.Email;
             user.City = request.City;
@@ -119,32 +93,20 @@ namespace eShop.Identity.API
             user.Name = request.Name;
             user.State = request.State;
             user.Zipcode = request.Zipcode;
-
-            db.Users.Update(user);
+            _kernel.UpdateEntity(entity: user, saveChanges: true);
+            ValidateUserType(user);
             context.Status = new Status(StatusCode.OK, string.Empty);
             return Task.FromResult(MapToResponse(user: user));
         }
 
-
         public override Task<CustomerResponse> DeleteCustomer(CustomerItemRequest request, ServerCallContext context)
         {
-            Guid external = Guid.Empty;
-            try
-            {
-                external = Guid.Parse(request.Id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Invalid customer id");
-            }
-
-            var user = db.Users.FirstOrDefault(user => user.Active && user.UserType == UserType.Customer && user.ExternalId == external);
-            var mappedUser = MapToResponse(user: user);
-            user.Active = false;
-            db.Users.Update(user);
+            var user = _kernel.DeleteEntity<User>(externalId: ParseUserID(id: request.Id));
+            ValidateUserType(user);
             context.Status = new Status(StatusCode.OK, string.Empty);
-            return Task.FromResult(mappedUser);
+            return Task.FromResult(MapToResponse(user: user));
         }
+
         private PaginatedCustomerResponse MapToResponse(List<eShop.IdentityEntities.Entities.User> items, long count, int pageIndex, int pageSize)
         {
             var result = new PaginatedCustomerResponse()
@@ -168,11 +130,7 @@ namespace eShop.Identity.API
         }
 
         private CustomerResponse MapToResponse(eShop.IdentityEntities.Entities.User user)
-        {
-            if (user.IsNull())
-            {
-                throw new Exception("Invalid customer");
-            }
+        {         
             return new CustomerResponse
             {
                 Id = user.ExternalId.ToString(),
@@ -186,6 +144,28 @@ namespace eShop.Identity.API
                 Zipcode = user.Zipcode,
                 FullAddress = user.FullAddress
             };
+        }
+
+        private void ValidateUserType(eShop.IdentityEntities.Entities.User user)
+        {
+            if (user.IsNull() || user.UserType != UserType.Customer)
+            {
+                throw new Exception("Invalid customer");
+            }
+        }
+
+        private Guid ParseUserID(string id)
+        {
+            Guid external = Guid.Empty;
+            try
+            {
+                external = Guid.Parse(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Invalid customer id");
+            }
+            return external;
         }
     }
 }

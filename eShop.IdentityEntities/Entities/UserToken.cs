@@ -8,7 +8,6 @@ namespace eShop.IdentityEntities.Entities
         public string Token { get; set; }
         public bool IsExpired { get; set; }
         public DateTime ExpiryDate { get; set; }
-        public long CreateById { get; set; }
         public User CreatedBy { get; set; }
     }
 }

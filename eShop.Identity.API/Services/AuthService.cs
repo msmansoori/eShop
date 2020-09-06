@@ -33,7 +33,7 @@ namespace eShop.Identity.API
             }
 
             var user = _kernel.GetEntities<User>().FirstOrDefault(user => user.PersonalEmail != null &&
-            user.PersonalEmail.Equals(request.Email.Trim(), StringComparison.OrdinalIgnoreCase));
+            user.PersonalEmail.ToLower() == request.Email.ToLower().Trim());
 
             if (user.IsNull())
             {
@@ -59,7 +59,7 @@ namespace eShop.Identity.API
             }
 
             var userToken = _kernel.GetEntities<UserToken>().FirstOrDefault(token => !token.IsExpired && token.ExpiryDate > DateTime.UtcNow &&
-            token.Token.Equals(request.Token.Trim(), StringComparison.OrdinalIgnoreCase));
+            token.Token == request.Token.Trim());
 
             return Task.FromResult(new TokenResponse
             {
@@ -67,10 +67,27 @@ namespace eShop.Identity.API
             });
         }
 
+        public override Task<LogoutResponse> Logout(LogoutRequest request, ServerCallContext context)
+        {
+            if (request.Token.IsEmpty())
+            {
+                throw new Exception("please enter token");
+            }
+
+            var userTokens = _kernel.GetEntities<UserToken>().Where(token => token.Token == request.Token.Trim());
+
+            foreach (var userToken in userTokens)
+            {
+                userToken.Active = false;
+            }
+
+            var entity = _kernel.UpdateMultiple(entities: userTokens, saveChanges: true);
+            return Task.FromResult(new LogoutResponse { });
+        }
+
         private string GenerateToken(User user)
         {
-            var token = _kernel.AddEntity(new UserToken { Token = user.ExternalId.ToString() });
-            _kernel.SaveChanges();
+            var token = _kernel.AddEntity(new UserToken { Token = user.ExternalId.ToString(), ExpiryDate = DateTime.UtcNow.AddMinutes(10) }, saveChanges: true);
             return token.Token;
         }
     }

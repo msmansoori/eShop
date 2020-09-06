@@ -5,6 +5,7 @@ using eShop.APIGateway.Models;
 using eShop.Common.Constants;
 using eShop.Common.Services;
 using eShop.ProductAPI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +13,6 @@ namespace eShop.APIGateway.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [CustomAuthorization]
     public class ProductController : ControllerBase
     {
         private readonly ILogger<ProductController> _logger;
@@ -22,6 +22,10 @@ namespace eShop.APIGateway.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<PaginatedItemsResponse> Get()
         {

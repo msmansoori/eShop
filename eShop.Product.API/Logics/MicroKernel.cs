@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using eShop.Common.HelperFields;
-using eShop.IdentityEntities.Context;
 using eShop.InternalServer.Interfaces;
+using eShop.ProductEntities.Context;
 using Microsoft.Extensions.Logging;
 
-namespace eShop.Identity.API.Logics
+namespace eShop.Product.API.Logics
 {
     public class MicroKernel : IMicroKernel
     {
         private readonly ILogger<MicroKernel> _logger;
         private readonly IPersistence _persistence;
-        private readonly IdentityContext _context;
-        public MicroKernel(ILogger<MicroKernel> logger, IPersistence persistence, IdentityContext context)
+        private readonly ProductContext _context;
+        public MicroKernel(ILogger<MicroKernel> logger, IPersistence persistence, ProductContext context)
         {
             _logger = logger;
             _persistence = persistence;
@@ -34,13 +34,13 @@ namespace eShop.Identity.API.Logics
 
         public TEntity DeleteEntity<TEntity>(Guid externalId, bool saveChanges = false) where TEntity : BaseField
         {
-            var entity = _persistence.DeleteEntity<IdentityContext, TEntity>(context: _context, externalId: externalId, saveChanges: saveChanges);
+            var entity = _persistence.DeleteEntity<ProductContext, TEntity>(context: _context, externalId: externalId, saveChanges: saveChanges);
             return entity;
         }
 
         public TEntity DeleteEntity<TEntity>(long id, bool saveChanges = false) where TEntity : BaseField
         {
-            var entity = _persistence.DeleteEntity<IdentityContext, TEntity>(context: _context, id: id, saveChanges: saveChanges);
+            var entity = _persistence.DeleteEntity<ProductContext, TEntity>(context: _context, id: id, saveChanges: saveChanges);
             return entity;
         }
 
@@ -52,19 +52,19 @@ namespace eShop.Identity.API.Logics
 
         public IQueryable<TEntity> GetEntities<TEntity>() where TEntity : BaseField
         {
-            var entities = _persistence.GetEntities<IdentityContext, TEntity>(context: _context);
+            var entities = _persistence.GetEntities<ProductContext, TEntity>(context: _context);
             return entities;
         }
 
         public TEntity GetEntity<TEntity>(Guid externalId) where TEntity : BaseField
         {
-            var entity = _persistence.GetEntity<IdentityContext, TEntity>(context: _context, externalId: externalId);
+            var entity = _persistence.GetEntity<ProductContext, TEntity>(context: _context, externalId: externalId);
             return entity;
         }
 
         public TEntity GetEntity<TEntity>(long id) where TEntity : BaseField
         {
-            var entity = _persistence.GetEntity<IdentityContext, TEntity>(context: _context, id: id);
+            var entity = _persistence.GetEntity<ProductContext, TEntity>(context: _context, id: id);
             return entity;
         }
 

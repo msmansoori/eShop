@@ -8,6 +8,8 @@ namespace eShop.Common.HelperFields
         public bool Active { get; set; }
         public Guid ExternalId { get; set; }
         public DateTime CreatedOn { get; set; }
+        public long? CreatedById { get; set; }
         public DateTime? ModifiedOn { get; set; }
+        public long? ModifiedById { get; set; }
     }
 }

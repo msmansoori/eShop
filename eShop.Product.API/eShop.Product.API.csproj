@@ -23,6 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\eShop.InternalServer\eShop.InternalServer.csproj" />
 	  <ProjectReference Include="..\eShop.ProductEntities\eShop.ProductEntities.csproj" />
 	</ItemGroup>
 

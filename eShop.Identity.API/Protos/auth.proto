@@ -7,7 +7,8 @@ package IdentityAPI;
 // The product service definition.
 service Auth {
   // Sends a products
-  rpc HandleLogin (LoginRequest) returns (LoginResponse);
+  rpc HandleLogin (LoginRequest) returns (LoginResponse);  
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
   rpc ValidToken (TokenRequest) returns (TokenResponse);
 }
 
@@ -20,6 +21,13 @@ message LoginResponse {
 	string id = 1;
 	string fullName = 2;
 	string token = 3;
+}
+
+message LogoutRequest{
+	string token = 1;
+}
+
+message LogoutResponse{
 }
 
 message TokenRequest {

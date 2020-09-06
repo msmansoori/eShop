@@ -38,6 +38,9 @@ namespace eShop.IdentityEntities.Migrations
                     b.Property<string>("ContactNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long?>("CreatedById")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -49,6 +52,9 @@ namespace eShop.IdentityEntities.Migrations
 
                     b.Property<string>("Line2")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
@@ -82,7 +88,7 @@ namespace eShop.IdentityEntities.Migrations
                             Active = true,
                             City = "Ahmedabad",
                             ContactNumber = "7665856521",
-                            CreatedOn = new DateTime(2020, 8, 31, 15, 23, 22, 831, DateTimeKind.Utc).AddTicks(2157),
+                            CreatedOn = new DateTime(2020, 9, 6, 14, 18, 21, 251, DateTimeKind.Utc).AddTicks(1265),
                             ExternalId = new Guid("ccf5361b-74a9-4b75-8211-37b26e2d1bc0"),
                             Line1 = "Test line 1",
                             Line2 = "test line 2",
@@ -91,7 +97,7 @@ namespace eShop.IdentityEntities.Migrations
                             PersonalEmail = "admin@gmail.com",
                             State = "Gujrat",
                             UserType = 1,
-                            Zipcode = "'314038"
+                            Zipcode = "314038"
                         },
                         new
                         {
@@ -99,7 +105,7 @@ namespace eShop.IdentityEntities.Migrations
                             Active = true,
                             City = "Ahmedabad",
                             ContactNumber = "7665856521",
-                            CreatedOn = new DateTime(2020, 8, 31, 15, 23, 22, 831, DateTimeKind.Utc).AddTicks(5632),
+                            CreatedOn = new DateTime(2020, 9, 6, 14, 18, 21, 251, DateTimeKind.Utc).AddTicks(5728),
                             ExternalId = new Guid("d25f7d72-e475-4d6f-8ca7-aaf189d322c4"),
                             Line1 = "Test line 1",
                             Line2 = "test line 2",
@@ -108,7 +114,24 @@ namespace eShop.IdentityEntities.Migrations
                             PersonalEmail = "retailer@gmail.com",
                             State = "Gujrat",
                             UserType = 3,
-                            Zipcode = "'314038"
+                            Zipcode = "314038"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Active = true,
+                            City = "Ahmedabad",
+                            ContactNumber = "7665856521",
+                            CreatedOn = new DateTime(2020, 9, 6, 14, 18, 21, 251, DateTimeKind.Utc).AddTicks(5823),
+                            ExternalId = new Guid("9b887027-fd67-45ba-9ad2-edecca67c1b3"),
+                            Line1 = "Test line 1",
+                            Line2 = "test line 2",
+                            Name = "Customer",
+                            Password = "customer",
+                            PersonalEmail = "customer@gmail.com",
+                            State = "Gujrat",
+                            UserType = 2,
+                            Zipcode = "314038"
                         });
                 });
 
@@ -119,8 +142,8 @@ namespace eShop.IdentityEntities.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("CreateById")
-                        .HasColumnType("bigint");
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
 
                     b.Property<long?>("CreatedById")
                         .HasColumnType("bigint");
@@ -131,8 +154,17 @@ namespace eShop.IdentityEntities.Migrations
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("ExternalId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsExpired")
                         .HasColumnType("bit");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");

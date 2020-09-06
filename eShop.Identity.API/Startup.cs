@@ -1,4 +1,4 @@
-﻿using eShop.IdentityEntities.Extensions;
+﻿using eShop.Identity.API.Extensions;
 using eShop.InternalServer.Interfaces;
 using eShop.InternalServer.Services;
 using Microsoft.AspNetCore.Builder;
@@ -22,10 +22,12 @@ namespace eShop.Identity.API
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSQLContext(configuration: Configuration);
+            services.AddIdentityConfigureServices(configuration: Configuration);
             services.AddGrpc();
 
             services.AddTransient<IPersistence, Persistence>();
+
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,7 +50,7 @@ namespace eShop.Identity.API
                 });
             });
 
-            app.InitDatabase();
+            app.AddIdentityConfigure();
         }
     }
 }
