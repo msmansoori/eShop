@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 	  <None Remove="Dockerfile" />
+	  <None Remove="Protos\basket.proto" />
 	  <None Remove="Protos\product_user.proto" />
 	</ItemGroup>
 
@@ -29,6 +30,7 @@
 
 	<ItemGroup>
 		<Protobuf Include="Protos\product.proto" GrpcServices="Server" />
+		<Protobuf Include="Protos\basket.proto" GrpcServices="Server" />
 		<Protobuf Include="Protos\product_user.proto" GrpcServices="Server" />
 	</ItemGroup>
 

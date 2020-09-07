@@ -35,5 +35,8 @@ message TokenRequest {
 }
 
 message TokenResponse {
-	bool isValid = 1;
+	int64 id = 1;
+	string externalId = 2;
+	string UserType = 3;
+	bool isValid = 4;
 }

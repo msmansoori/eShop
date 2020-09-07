@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "eShop.ProductAPI";
+
+package ProductAPI;
+
+// The product service definition.
+service Basket {
+  rpc AddToBacket (BasketRequest) returns (BasketResponse);
+  rpc RemoveFromBasket (BasketRequest) returns (BasketResponse);
+}
+
+message BasketResponse {
+  string productId = 1;
+}
+
+message BasketRequest {
+   string productId = 1;
+}

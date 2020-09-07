@@ -12,7 +12,8 @@ namespace eShop.Identity.API.Logics
     {
         private readonly ILogger<MicroKernel> _logger;
         private readonly IPersistence _persistence;
-        private readonly IdentityContext _context;
+        private readonly IdentityContext _context;        
+
         public MicroKernel(ILogger<MicroKernel> logger, IPersistence persistence, IdentityContext context)
         {
             _logger = logger;
@@ -94,6 +95,6 @@ namespace eShop.Identity.API.Logics
         {
             entities = _persistence.UpdateMultiple(context: _context, entities: entities, saveChanges: saveChanges);
             return entities;
-        }
+        }     
     }
 }

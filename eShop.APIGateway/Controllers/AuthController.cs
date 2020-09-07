@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using eShop.Common.Constants;
 using eShop.Common.Services;
 using eShop.IdentityAPI;
+using eShop.ProductAPI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -71,12 +72,21 @@ namespace eShop.APIGateway.Controllers
             {
                 throw new Exception("Invalid model");
             }
+
             var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.IdentityService, logger: _logger, func: async channel =>
             {
                 var client = new Customer.CustomerClient(channel);
                 _logger.LogDebug("Grpc get customer request {@request}", request);
-                return await client.AddCustomerAsync(request);
+                var customer = await client.AddCustomerAsync(request);
+                var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.ProductService, logger: _logger, func: async channel =>
+                {
+                    var client = new ProductUser.ProductUserClient(channel);
+                    _logger.LogDebug("Grpc add product customer request {@request}", customer);
+                    return await client.UpdateCustomerAsync(new ProductUserRequest { Id = customer.Id, Name = customer.Name, IsDeleted = false });
+                });
+                return customer;
             });
+
             return response;
         }
     }

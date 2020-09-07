@@ -5,6 +5,7 @@ using eShop.APIGateway.Attributes;
 using eShop.Common.Constants;
 using eShop.Common.Services;
 using eShop.IdentityAPI;
+using eShop.ProductAPI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -57,7 +58,9 @@ namespace eShop.APIGateway.Controllers
             {
                 var client = new Customer.CustomerClient(channel);
                 _logger.LogDebug("Grpc get customer request {@request}", customerRequest);
-                return await client.UpdateCustomerAsync(customerRequest);
+                var customer = await client.UpdateCustomerAsync(customerRequest);
+                await UpdateProductCustomer(customer, false);
+                return customer;
             });
             return response;
         }
@@ -69,7 +72,20 @@ namespace eShop.APIGateway.Controllers
             {
                 var client = new Customer.CustomerClient(channel);
                 _logger.LogDebug("Grpc delete customer request {@request}", id);
-                return await client.DeleteCustomerAsync(new CustomerItemRequest { Id = id.ToString() });
+                var customer = await client.DeleteCustomerAsync(new CustomerItemRequest { Id = id.ToString() });
+                await UpdateProductCustomer(customer, true);
+                return customer;
+            });
+            return response;
+        }
+
+        private async Task<ProductUserResponse> UpdateProductCustomer(CustomerResponse customer, bool isDeleted = false)
+        {
+            var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.ProductService, logger: _logger, func: async channel =>
+            {
+                var client = new ProductUser.ProductUserClient(channel);
+                _logger.LogDebug("Grpc update product customer request {@request}", customer);
+                return await client.UpdateCustomerAsync(new ProductUserRequest { Id = customer.Id, Name = customer.Name, IsDeleted = isDeleted });
             });
             return response;
         }

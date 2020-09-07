@@ -17,6 +17,8 @@ service Product {
 
   // Update exisiting product
   rpc UpdateProduct (ProductRequest) returns (ProductResponse);
+
+  rpc DeleteProduct (ProductItemRequest) returns (ProductResponse);
 }
 
 // The request message containing the Product overview filter

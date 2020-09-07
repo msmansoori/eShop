@@ -1,4 +1,6 @@
-﻿using eShop.Common.Utilities;
+﻿using eShop.Common.Enums;
+using eShop.Common.Utilities;
+using eShop.InternalServer.Interfaces;
 using eShop.ProductAPI;
 using eShop.ProductEntities.Context;
 using eShop.ProductEntities.Entities;
@@ -12,42 +14,54 @@ namespace eShop.Product.API.Services
 {
     public class ProductUserService : ProductUser.ProductUserBase
     {
-        private readonly ILogger<ProductUserService> _logger;
-        private readonly ProductContext db;
 
-        public ProductUserService(ILogger<ProductUserService> logger, ProductContext context)
+        private readonly ILogger<ProductUserService> _logger;
+        private readonly IMicroKernel _kernel;
+        public ProductUserService(ILogger<ProductUserService> logger, IMicroKernel kernel)
         {
-            db = context;
             _logger = logger;
+            _kernel = kernel;
         }
 
         public override Task<ProductUserResponse> UpdateRetailer(ProductUserRequest request, ServerCallContext context)
         {
-            var retailer = db.Users.FirstOrDefault(user => user.InternalReference.ToString() == request.Id && user.Active);
-            if (retailer.IsNull())
-            {
-                retailer = new User
-                {
-                    Active = true,
-                    Name = request.Name,
-                    InternalReference = Guid.Parse(request.Id),
-                    CreatedOn = DateTime.UtcNow,
-                    ExternalId = Guid.NewGuid()
-                };
-                db.Users.Add(retailer);
-            }
-            else
-            {
-                retailer.ModifiedOn = DateTime.UtcNow;
-                retailer.Name = request.Name;
-                db.Users.Update(retailer);
-            }
+            var retailer = AddUpdateUser(name: request.Name, referenceId: Guid.Parse(request.Id), type: UserType.Retailer);
 
             return Task.FromResult(new ProductUserResponse
             {
                 Name = retailer.Name,
                 Id = retailer.ExternalId.ToString()
             });
+        }
+
+
+        public override Task<ProductUserResponse> UpdateCustomer(ProductUserRequest request, ServerCallContext context)
+        {
+            var customer = AddUpdateUser(name: request.Name, referenceId: Guid.Parse(request.Id), type: UserType.Customer);
+
+            return Task.FromResult(new ProductUserResponse
+            {
+                Name = customer.Name,
+                Id = customer.ExternalId.ToString()
+            });
+        }
+
+
+        private User AddUpdateUser(string name, Guid referenceId, UserType type)
+        {
+            var user = _kernel.GetEntities<User>().FirstOrDefault(user => user.InternalReference == referenceId);
+            if (user.IsNull())
+            {
+                user = new User { Name = name, InternalReference = referenceId, UserType = type };
+                _kernel.AddEntity(entity: user);
+            }
+            else
+            {
+                user.Name = name;
+                _kernel.UpdateEntity(entity: user);
+            }
+            _kernel.SaveChanges();
+            return user;
         }
     }
 }

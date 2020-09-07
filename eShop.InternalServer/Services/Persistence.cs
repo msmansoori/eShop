@@ -11,26 +11,30 @@ namespace eShop.InternalServer.Services
     public class Persistence : IPersistence
     {
         private readonly ILogger<Persistence> _logger;
+        private readonly IAudience _audience;
         private readonly IDatabase _database;
 
-        public Persistence(ILogger<Persistence> logger, IDatabase database)
+        public Persistence(ILogger<Persistence> logger, IDatabase database, IAudience audience)
         {
             _logger = logger;
             _database = database;
+            _audience = audience;
         }
 
         public TEntity AddEntity<TContext, TEntity>(TContext context, TEntity entity, bool saveChanges = false) where TContext : DbContext where TEntity : BaseField
         {
+            AddBefore(entity: entity);
             return _database.AddEntity(context: context, entity: entity, saveChanges: saveChanges);
         }
 
         public TEntity AddEntityAsync<TContext, TEntity>(TContext context, TEntity entity, bool saveChanges = false) where TContext : DbContext where TEntity : BaseField
         {
+            AddBefore(entity: entity);
             return _database.AddEntityAsync(context: context, entity: entity, saveChanges: saveChanges);
         }
 
         public TEntity DeleteEntity<TContext, TEntity>(TContext context, Guid externalId, bool saveChanges = false) where TContext : DbContext where TEntity : BaseField
-        {
+        {            
             return _database.DeleteEntity<TContext, TEntity>(context: context, externalId: externalId, saveChanges: saveChanges);
         }
 
@@ -74,17 +78,55 @@ namespace eShop.InternalServer.Services
 
         public TEntity UpdateEntity<TContext, TEntity>(TContext context, TEntity entity, bool saveChanges = false) where TContext : DbContext where TEntity : BaseField
         {
+            UpdateBefore(entity: entity);
             return _database.UpdateEntity(context: context, entity: entity, saveChanges: saveChanges);
         }
 
         public List<TEntity> UpdateMultiple<TContext, TEntity>(TContext context, List<TEntity> entities, bool saveChanges = false) where TContext : DbContext where TEntity : BaseField
         {
+            foreach (var entity in entities)
+            {
+                UpdateBefore(entity: entity);
+            }
             return _database.UpdateMultiple(context: context, entities: entities, saveChanges: saveChanges);
         }
 
         public IQueryable<TEntity> UpdateMultiple<TContext, TEntity>(TContext context, IQueryable<TEntity> entities, bool saveChanges = false) where TContext : DbContext where TEntity : BaseField
         {
+            foreach (var entity in entities)
+            {
+                UpdateBefore(entity: entity);
+            }
             return _database.UpdateMultiple(context: context, entities: entities, saveChanges: saveChanges);
         }
+
+
+        #region private functions
+        private TEntity AddBefore<TEntity>(TEntity entity) where TEntity : BaseField
+        {
+            var currentUser = _audience.EntityId();
+            if (currentUser > 0)
+            {
+                entity.CreatedById = currentUser;
+            }
+            entity.Active = true;
+            entity.CreatedOn = DateTime.UtcNow;
+            entity.ExternalId = Guid.NewGuid();
+            return entity;
+        }
+
+
+        private TEntity UpdateBefore<TEntity>(TEntity entity) where TEntity : BaseField
+        {
+            var currentUser = _audience.EntityId();
+            if (currentUser > 0)
+            {
+                entity.ModifiedById = currentUser;
+            }
+            entity.ModifiedOn = DateTime.UtcNow;
+            return entity;
+        }
+
+        #endregion private functions
     }
 }

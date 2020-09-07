@@ -8,13 +8,13 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <DocumentationFile>bin\Debug\netcoreapp3.1\eShop.APIGateway.xml</DocumentationFile>
-	  <OutputPath>bin\Debug\netcoreapp3.1\</OutputPath>
-	  <NoWarn>1701;1702;1591</NoWarn>
+		<DocumentationFile>bin\Debug\netcoreapp3.1\eShop.APIGateway.xml</DocumentationFile>
+		<OutputPath>bin\Debug\netcoreapp3.1\</OutputPath>
+		<NoWarn>1701;1702;1591</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="Dockerfile" />
+		<None Remove="Dockerfile" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -33,16 +33,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\eShop.Common\eShop.Common.csproj" />
+		<ProjectReference Include="..\eShop.Common\eShop.Common.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-    <Protobuf Include="..\eShop.Identity.API\Protos\auth.proto" GrpcServices="Client" />
-    <Protobuf Include="..\eShop.Identity.API\Protos\customer.proto" GrpcServices="Client" />
-    <Protobuf Include="..\eShop.Identity.API\Protos\retailer.proto" GrpcServices="Client" />
-    <Protobuf Include="..\eShop.Product.API\Protos\product.proto" GrpcServices="Client" />
-    <Protobuf Include="..\eShop.Product.API\Protos\product_user.proto" GrpcServices="Client" />
+		<Protobuf Include="..\eShop.Identity.API\Protos\auth.proto" GrpcServices="Client" />
+		<Protobuf Include="..\eShop.Identity.API\Protos\customer.proto" GrpcServices="Client" />
+		<Protobuf Include="..\eShop.Identity.API\Protos\retailer.proto" GrpcServices="Client" />
+		<Protobuf Include="..\eShop.Product.API\Protos\product.proto" GrpcServices="Client" />
+		<Protobuf Include="..\eShop.Product.API\Protos\product_user.proto" GrpcServices="Client" />
+		<Protobuf Include="..\eShop.Product.API\Protos\basket.proto" GrpcServices="Client" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Remove="..\.dockerignore" />
+		<None Remove="..\.dockerignore" />
 	</ItemGroup>
 </Project>

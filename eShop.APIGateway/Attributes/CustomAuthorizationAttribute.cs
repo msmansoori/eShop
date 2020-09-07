@@ -46,17 +46,20 @@ namespace eShop.APIGateway.Attributes
                     throw new UnauthorizedAccessException();
                 }
 
-                SetClaim(filterContext: filterContext, user: tokenString);
+                SetClaim(filterContext: filterContext, response: response);
             }
             catch (Exception ex)
             {
                 throw new UnauthorizedAccessException();
             }
         }
-        private void SetClaim(AuthorizationFilterContext filterContext, string user)
+        private void SetClaim(AuthorizationFilterContext filterContext, TokenResponse response)
         {
             var ci = (ClaimsIdentity)filterContext.HttpContext.User.Identity;
-            ci.AddClaim(new Claim("CurrentUser", user));
+            ci.AddClaim(new Claim("externalId", response.Id.ToString()));
+            ci.AddClaim(new Claim("entityId", response.ExternalId.ToString()));
+            ci.AddClaim(new Claim("userType", response.UserType.ToString()));
+            
         }
     }
 }

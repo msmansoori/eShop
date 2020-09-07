@@ -17,6 +17,7 @@ namespace eShop.ProductEntities.Context
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UploadedFile> UploadedFiles { get; set; }
+        public DbSet<Basket> Baskets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -69,6 +70,7 @@ namespace eShop.ProductEntities.Context
                 new UploadedFile { Id = 3, Name = "ESSENTIAL STRUCTURED BLAZER 3", FilePath = "/img/product/details/product-3.jpg", Entity = Entity.Product, EntityId = 1, Active = true, CreatedById = 1, CreatedOn = DateTime.UtcNow, ExternalId = Guid.NewGuid() },
                 new UploadedFile { Id = 4, Name = "ESSENTIAL STRUCTURED BLAZER 4", FilePath = "/img/product/details/product-4.jpg", Entity = Entity.Product, EntityId = 1, Active = true, CreatedById = 1, CreatedOn = DateTime.UtcNow, ExternalId = Guid.NewGuid() });
 
+            modelBuilder.Entity<Basket>().ToTable("Baskets");
         }
     }
 }

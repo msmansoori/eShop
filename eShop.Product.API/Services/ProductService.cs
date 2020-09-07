@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using eShop.Common.Utilities;
+using eShop.InternalServer.Interfaces;
 using eShop.ProductAPI;
 using eShop.ProductEntities.Context;
 using eShop.ProductEntities.Entities;
@@ -18,90 +19,68 @@ namespace eShop.Product.API.Services
     public class ProductService : ProductBase
     {
         private readonly ILogger<ProductService> _logger;
-        private readonly ProductContext db;
-
-        public ProductService(ILogger<ProductService> logger, ProductContext context)
+        private readonly IMicroKernel _kernel;
+        private readonly IAudience _audience;
+        public ProductService(ILogger<ProductService> logger, IMicroKernel kernel, IAudience audience)
         {
-            db = context;
             _logger = logger;
+            _kernel = kernel;
+            _audience = audience;
         }
 
-        public override async Task<PaginatedItemsResponse> GetProducts(ProductItemsRequest request, ServerCallContext context)
+        public override Task<PaginatedItemsResponse> GetProducts(ProductItemsRequest request, ServerCallContext context)
         {
-            _logger.LogInformation("Begin grpc call ProductService.GetProducts for product page index", request.PageIndex);
-
-            var result = db.Products.Where(product => product.Active).AsQueryable();
+            var result = _kernel.GetEntities<eShop.ProductEntities.Entities.Product>();
 
             if (!string.IsNullOrWhiteSpace(request.Search))
             {
-                result = result.Where(product => product.Display.Contains(request.Search));
+                result = result.Where(user => user.Name.Contains(request.Search));
             }
 
             var itemsOnPage = result
-                .Include(b => b.Brand)
-                .Include(b => b.Category)
                 .OrderBy(c => c.ModifiedOn).ThenBy(c => c.ModifiedOn)
                 .Skip(request.PageSize * request.PageIndex).Take(request.PageSize).ToList();
             var model = this.MapToResponse(itemsOnPage, result.Count(), request.PageIndex, request.PageSize);
             context.Status = new Status(StatusCode.OK, string.Empty);
-            return await Task.FromResult(model);
+            return Task.FromResult(model);
         }
 
-
-        public override async Task<ProductResponse> GetProductById(ProductItemRequest request, ServerCallContext context)
+        public override Task<ProductResponse> GetProductById(ProductItemRequest request, ServerCallContext context)
         {
-            _logger.LogInformation("Begin grpc call ProductService.GetProductById for product id", request.Id);
-
-            if (string.IsNullOrWhiteSpace(request.Id))
-            {
-                _logger.LogInformation("Invalid product", request.Id);
-                return null;
-            }
-
-            Guid.TryParse(request.Id, out var productId);
-
-            if (Guid.Empty == productId)
-            {
-                _logger.LogInformation("Invalid product", request.Id);
-                return null;
-            }
-
-
-            var result = await db.Products
-                .Include(product => product.Brand)
-                .Include(product => product.Category)
-                .FirstOrDefaultAsync(product => product.Active && product.ExternalId == productId);
-
+            var product = _kernel.GetEntity<eShop.ProductEntities.Entities.Product>(externalId: ParseUserID(id: request.Id));
             context.Status = new Status(StatusCode.OK, string.Empty);
-
-            //string colors = 12;
-            //string sizes = 13;
-            //string promotions = 14;
-            return new ProductResponse
-            {
-                Id = result.ExternalId.ToString(),
-                Name = result.Display,
-                Category = GetCategory(result),
-                Brand = GetBrand(result),
-                Price = (double)result.Price,
-                Discount = result.Discount,
-                DiscountPrice = (double)result.DiscountPrice,
-                AvailableStock = result.AvailableStock,
-                Description = result.Description,
-                ShortDescription = result.ShortDescription,
-                Specification = result.Specification,
-                Colors = GetEmunStings<Color>(result.Colors),
-                Sizes = GetEmunStings<Size>(result.Sizes),
-                Promotions = result.Promotion.ToString()
-            };
+            return Task.FromResult(MapToResponse(product: product));
         }
+
+
+        public override Task<ProductResponse> AddProduct(ProductRequest request, ServerCallContext context)
+        {
+            UserValidation();
+
+            var brand = GetBrand(request.Brand);
+            var product = new eShop.ProductEntities.Entities.Product
+            {
+                AvailableStock = Convert.ToInt32(request.AvailableStock),
+                Brand = brand
+            };
+
+            _kernel.AddEntity(entity: product, saveChanges: true);
+            context.Status = new Status(StatusCode.OK, string.Empty);
+            return Task.FromResult(MapToResponse(product: product));
+        }
+
 
         public override Task<ProductResponse> UpdateProduct(ProductRequest request, ServerCallContext context)
         {
             return base.UpdateProduct(request, context);
         }
 
+        public override Task<ProductResponse> DeleteProduct(ProductItemRequest request, ServerCallContext context)
+        {
+            return base.DeleteProduct(request, context);
+        }
 
+        #region private functions
         private PaginatedItemsResponse MapToResponse(List<eShop.ProductEntities.Entities.Product> items, long count, int pageIndex, int pageSize)
         {
             var result = new PaginatedItemsResponse()
@@ -113,21 +92,21 @@ namespace eShop.Product.API.Services
 
             items.ForEach(i =>
             {
-                result.Data.Add(new ProductListResponse()
+                result.Data.Add(new ProductListResponse
                 {
                     Id = i.ExternalId.ToString(),
                     Name = i.Name,
-                    Category = i.Category != null && i.Category.Active ? new ProductType { Id = i.Category.ExternalId.ToString(), Name = i.Category.Display } : null,
-                    Brand = i.Brand != null && i.Brand.Active ? new ProductBrand { Id = i.Brand.ExternalId.ToString(), Name = i.Brand.Display } : null,
+                    Category = GetCategory(i),
+                    Brand = GetBrand(i),
                     Price = (double)i.Price,
                     Discount = i.Discount,
                     DiscountPrice = (double)i.DiscountPrice,
                     AvailableStock = i.AvailableStock
                 });
             });
-
             return result;
         }
+
 
         private ProductBrand GetBrand(eShop.ProductEntities.Entities.Product product)
         {
@@ -139,39 +118,26 @@ namespace eShop.Product.API.Services
             return product.Category != null && product.Category.Active ? new ProductType { Id = product.Category.ExternalId.ToString(), Name = product.Category.Display } : null;
         }
 
-        private List<ProductImage> GetProductImages(eShop.ProductEntities.Entities.Product product)
+        private ProductResponse MapToResponse(eShop.ProductEntities.Entities.Product product)
         {
-            var files = db.UploadedFiles.Where(file => file.Active && file.Entity == Entity.Product && file.EntityId == product.Id);
-            var images = new List<ProductImage>();
-            foreach (var item in files)
+            return new ProductResponse
             {
-                images.Add(new ProductImage
-                {
-                    Id = item.ExternalId.ToString(),
-                    Name = item.Display,
-                    Path = item.FilePath
-                });
-            }
-            return images;
+                Id = product.ExternalId.ToString(),
+                Name = product.Display,
+                Category = GetCategory(product),
+                Brand = GetBrand(product),
+                Price = (double)product.Price,
+                Discount = product.Discount,
+                DiscountPrice = (double)product.DiscountPrice,
+                AvailableStock = product.AvailableStock,
+                Description = product.Description,
+                ShortDescription = product.ShortDescription,
+                Specification = product.Specification,
+                Colors = GetEmunStings<Color>(product.Colors),
+                Sizes = GetEmunStings<Size>(product.Sizes),
+                Promotions = product.Promotion.ToString()
+            };
         }
-
-        //private string GetColors(eShop.ProductEntities.Entities.Product product)
-        //{
-        //    var colors = new List<string>();
-        //    if (!string.IsNullOrWhiteSpace(product.Colors))
-        //    {
-        //        Color color;
-
-        //        foreach (var item in product.Colors.Split(";"))
-        //        {
-        //            Enum.TryParse<Color>(item, out color);
-        //            colors.Add(color.ToString());
-        //        }
-
-        //    }
-        //    return string.Join(";", colors);
-        //}
-
 
         private string GetEmunStings<T>(string enumStr) where T : struct
         {
@@ -188,25 +154,58 @@ namespace eShop.Product.API.Services
             return string.Join(";", enumTypes);
         }
 
-
-        private Brand ProductBrand(eShop.ProductAPI.ProductBrand brandDto)
+        private Guid ParseUserID(string id)
         {
-            if (!brandDto.IsNull() & brandDto.Id.IsNotEmpty())
+            Guid external = Guid.Empty;
+            try
             {
-                var brandEx = db.Brands.FirstOrDefault(brand => brand.Active && brand.ExternalId.ToString() == brandDto.Id);
-                if (brandEx.IsNull())
-                {
-                    brandEx = new Brand { Id = 1, Active = true, Name = "SKMEIMore Men Watches from SKMEI", CreatedById = 2, CreatedOn = DateTime.UtcNow, ExternalId = Guid.NewGuid() };
-                    db.Brands.Add(brandEx);
-                }
-                else if (!brandEx.Name.Equals(brandDto.Name, StringComparison.OrdinalIgnoreCase))
-                {
-                    brandEx.Name = brandDto.Name;
-                    db.Brands.Update(brandEx);
-                }
-                return brandEx;
+                external = Guid.Parse(id);
             }
-            return null;
+            catch (Exception ex)
+            {
+                throw new Exception("Invalid product id");
+            }
+            return external;
         }
+
+
+        private void UserValidation()
+        {
+            var userType = _audience.UserType();
+            if (userType != Common.Enums.UserType.Retailer)
+            {
+                throw new Exception("This user can not add/update products");
+            }
+        }
+
+
+        private Brand GetBrand(eShop.ProductAPI.ProductBrand brandDto)
+        {
+            if (brandDto.IsNull())
+            {
+                return null;
+            }
+
+            var brand = _kernel.GetEntity<Brand>(externalId: ParseUserID(brandDto.Id));
+
+            if (brand.IsNull())
+            {
+                brand = new Brand
+                {
+                    Name = brandDto.Name
+                };
+                _kernel.AddEntity(entity: brand, saveChanges: true);
+            }
+            else if (!brandDto.Name.Equals(brand.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                brand.Name = brandDto.Name;
+                _kernel.UpdateEntity(entity: brand, saveChanges: true);
+            }
+
+            return brand;
+        }
+
+        #endregion private functions
+
     }
 }

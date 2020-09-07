@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using eShop.Common.Constants;
 using eShop.Common.Services;
@@ -85,7 +83,7 @@ namespace eShop.APIGateway.Controllers
             var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.IdentityService, logger: _logger, func: async channel =>
             {
                 var client = new Retailer.RetailerClient(channel);
-                _logger.LogDebug("Grpc delete customer request {@request}", id);
+                _logger.LogDebug("Grpc delete Retailer request {@request}", id);
                 var retailer = await client.DeleteRetailerAsync(new RetailerItemRequest { Id = id.ToString() });
                 await UpdateProductRetailer(retailer, true);
                 return retailer;
@@ -98,7 +96,7 @@ namespace eShop.APIGateway.Controllers
             var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.ProductService, logger: _logger, func: async channel =>
             {
                 var client = new ProductUser.ProductUserClient(channel);
-                _logger.LogDebug("Grpc delete customer request {@request}", retailer);
+                _logger.LogDebug("Grpc delete Retailer request {@request}", retailer);
                 return await client.UpdateRetailerAsync(new ProductUserRequest { Id = retailer.Id, Name = retailer.Name, IsDeleted = isDeleted });
             });
             return response;

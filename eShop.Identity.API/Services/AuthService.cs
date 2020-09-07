@@ -61,8 +61,16 @@ namespace eShop.Identity.API
             var userToken = _kernel.GetEntities<UserToken>().FirstOrDefault(token => !token.IsExpired && token.ExpiryDate > DateTime.UtcNow &&
             token.Token == request.Token.Trim());
 
+            User user = null;
+            if (!userToken.IsNull())
+            {
+                user = _kernel.GetEntity<User>(externalId: Guid.Parse(userToken.Token));
+            }
+
             return Task.FromResult(new TokenResponse
             {
+                Id = user.IsNull() ? 0 : user.Id,
+                UserType = user.UserType.ToString(),
                 IsValid = !userToken.IsNull()
             });
         }
