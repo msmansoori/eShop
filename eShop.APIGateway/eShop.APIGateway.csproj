@@ -40,7 +40,7 @@
     <Protobuf Include="..\eShop.Identity.API\Protos\customer.proto" GrpcServices="Client" />
     <Protobuf Include="..\eShop.Identity.API\Protos\retailer.proto" GrpcServices="Client" />
     <Protobuf Include="..\eShop.Product.API\Protos\product.proto" GrpcServices="Client" />
-    <Protobuf Include="..\eShop.Product.API\Protos\product_retailer.proto" GrpcServices="Client" />
+    <Protobuf Include="..\eShop.Product.API\Protos\product_user.proto" GrpcServices="Client" />
 	</ItemGroup>
 	<ItemGroup>
 	  <None Remove="..\.dockerignore" />

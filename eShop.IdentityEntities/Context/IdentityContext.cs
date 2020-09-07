@@ -1,7 +1,7 @@
-﻿using eShop.IdentityEntities.Entities;
-using eShop.IdentityEntities.Entities.Enums;
+﻿using System;
+using eShop.Common.Enums;
+using eShop.IdentityEntities.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace eShop.IdentityEntities.Context
 {

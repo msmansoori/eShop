@@ -93,13 +93,13 @@ namespace eShop.APIGateway.Controllers
             return response;
         }
 
-        private async Task<ProductRetailerResponse> UpdateProductRetailer(RetailerResponse retailer, bool isDeleted = false)
+        private async Task<ProductUserResponse> UpdateProductRetailer(RetailerResponse retailer, bool isDeleted = false)
         {
             var response = await GrpcCallerService.CallService(urlGrpc: GRPCUrl.ProductService, logger: _logger, func: async channel =>
             {
-                var client = new ProductRetailer.ProductRetailerClient(channel);
+                var client = new ProductUser.ProductUserClient(channel);
                 _logger.LogDebug("Grpc delete customer request {@request}", retailer);
-                return await client.UpdateRetailerAsync(new ProductRetailerUpdateRequest { Id = retailer.Id, Name = retailer.Name, IsDeleted = isDeleted });
+                return await client.UpdateRetailerAsync(new ProductUserRequest { Id = retailer.Id, Name = retailer.Name, IsDeleted = isDeleted });
             });
             return response;
         }

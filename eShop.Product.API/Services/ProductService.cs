@@ -44,8 +44,7 @@ namespace eShop.Product.API.Services
                 .Skip(request.PageSize * request.PageIndex).Take(request.PageSize).ToList();
             var model = this.MapToResponse(itemsOnPage, result.Count(), request.PageIndex, request.PageSize);
             context.Status = new Status(StatusCode.OK, string.Empty);
-
-            return model;
+            return await Task.FromResult(model);
         }
 
 

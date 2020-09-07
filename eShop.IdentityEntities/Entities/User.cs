@@ -1,6 +1,6 @@
-﻿using eShop.Common.HelperFields;
-using eShop.IdentityEntities.Entities.Enums;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using eShop.Common.Enums;
+using eShop.Common.HelperFields;
 
 namespace eShop.IdentityEntities.Entities
 {

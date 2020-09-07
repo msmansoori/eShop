@@ -20,4 +20,8 @@
     <ProjectReference Include="..\eShop.Common\eShop.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\Enums\" />
+  </ItemGroup>
+
 </Project>

@@ -10,18 +10,18 @@ using System.Threading.Tasks;
 
 namespace eShop.Product.API.Services
 {
-    public class ProductRetailerService : ProductRetailer.ProductRetailerBase
+    public class ProductUserService : ProductUser.ProductUserBase
     {
-        private readonly ILogger<ProductRetailerService> _logger;
+        private readonly ILogger<ProductUserService> _logger;
         private readonly ProductContext db;
 
-        public ProductRetailerService(ILogger<ProductRetailerService> logger, ProductContext context)
+        public ProductUserService(ILogger<ProductUserService> logger, ProductContext context)
         {
             db = context;
             _logger = logger;
         }
 
-        public override Task<ProductRetailerResponse> UpdateRetailer(ProductRetailerUpdateRequest request, ServerCallContext context)
+        public override Task<ProductUserResponse> UpdateRetailer(ProductUserRequest request, ServerCallContext context)
         {
             var retailer = db.Users.FirstOrDefault(user => user.InternalReference.ToString() == request.Id && user.Active);
             if (retailer.IsNull())
@@ -43,7 +43,7 @@ namespace eShop.Product.API.Services
                 db.Users.Update(retailer);
             }
 
-            return Task.FromResult(new ProductRetailerResponse
+            return Task.FromResult(new ProductUserResponse
             {
                 Name = retailer.Name,
                 Id = retailer.ExternalId.ToString()

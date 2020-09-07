@@ -1,4 +1,4 @@
-﻿namespace eShop.IdentityEntities.Entities.Enums
+﻿namespace eShop.Common.Enums
 {
     public enum UserType
     {
